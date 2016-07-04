@@ -767,7 +767,6 @@ dns_recv(void *arg, struct udp_pcb *pcb, struct pbuf *p, ip_addr_t *addr, u16_t 
       pEntry = &dns_table[i];
       if(pEntry->state == DNS_STATE_ASKING) {
         /* This entry is now completed. */
-        pEntry->state = DNS_STATE_DONE;
         pEntry->err   = hdr->flags2 & DNS_FLAG2_ERR_MASK;
 
         /* We only care about the question(s) and the answers. The authrr
@@ -813,6 +812,7 @@ dns_recv(void *arg, struct udp_pcb *pcb, struct pbuf *p, ip_addr_t *addr, u16_t 
             ip_addr_debug_print(DNS_DEBUG, (&(pEntry->ipaddr)));
             LWIP_DEBUGF(DNS_DEBUG, ("\n"));
             /* call specified callback function if provided */
+            pEntry->state = DNS_STATE_DONE;
             if (pEntry->found) {
               (*pEntry->found)(pEntry->name, &pEntry->ipaddr, pEntry->arg);
             }
